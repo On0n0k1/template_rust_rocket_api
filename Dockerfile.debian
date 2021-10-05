@@ -1,0 +1,40 @@
+# FROM rust:latest AS builder
+FROM rustlang/rust:nightly AS builder
+
+RUN USER=root cargo new --bin template_rust_rocket_api
+WORKDIR ./template_rust_rocket_api
+COPY ./Cargo.toml ./Cargo.toml
+RUN cargo build --release \
+    && rm src/*.rs target/release/deps/template_rust_rocket_api*
+
+ADD . ./
+
+RUN cargo build --release
+
+
+FROM debian:buster-slim
+
+ARG APP=/usr/src/app
+
+# Not sure if this is required, I needed this when building warp containers
+RUN apt-get update \
+    && apt-get install -y ca-certificates tzdata \
+    && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 8000
+
+ENV TZ=Etc/UTC \
+    APP_USER=appuser
+
+RUN groupadd $APP_USER \
+    && useradd -g $APP_USER $APP_USER \
+    && mkdir -p ${APP}
+
+COPY --from=builder /template_rust_rocket_api/target/release/template_rust_rocket_api ${APP}/template_rust_rocket_api
+
+RUN chown -R $APP_USER:$APP_USER ${APP}
+
+USER $APP_USER
+WORKDIR ${APP}
+
+CMD ["./template_rust_rocket_api"]

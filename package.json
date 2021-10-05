@@ -1,0 +1,27 @@
+{
+  "name": "template_rust_rocket_api",
+  "version": "0.1.0",
+  "description": "Template for a rust api written with the rocket framework packaged in docker containers",
+  "scripts": {
+    "docker-build": "sudo docker build --rm -f Dockerfile.debian -t hello .",
+    "docker-run": "sudo docker run -p 8000:8000 --name \"hello_there\" \"hello\"",
+    "docker-stop": "sudo docker stop \"hello_there\"",
+    "docker-remove": "npm run stop-docker \n sudo docker rm -f hello \n sudo docker rmi --force hello",
+    "docker-clear":"sudo docker system prune",
+    "docker-clear-everything": "sudo docker system prune --all",
+    "local-test": "sudo docker run --rm --user \"$(id -u)\":\"$(id -g)\" -v \"$PWD\":/usr/src/myapp -w /usr/src/myapp rustlang/rust:nightly cargo test",
+    "local-build": "rm -rf ./target \n sudo docker run --rm --user \"$(id -u)\":\"$(id -g)\" -v \"$PWD\":/usr/src/myapp -w /usr/src/myapp rustlang/rust:nightly cargo build --release",
+    "local-run": "./target/release/template_rust_rocket_api"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/On0n0k1/template_rust_rocket_api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/On0n0k1/template_rust_rocket_api/issues"
+  },
+  "homepage": "https://github.com/On0n0k1/template_rust_rocket_api#readme"
+}
